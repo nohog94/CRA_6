@@ -59,6 +59,30 @@ public class Attendance {
 
         playerAttDay[playerId][dayIndex]++;
         points[playerId] += addPoint;
+        if (isBonusAvailable(playerId)) {
+            points[playerId] += 10;
+        }
+    }
+
+    private static boolean isBonusAvailable(int playerId) {
+        return playerAttDay[playerId][WEDNESDAY] >= BONUS_COUNT
+                || playerAttDay[playerId][SATURDAY] + playerAttDay[playerId][SUNDAY] >= BONUS_COUNT;
+    }
+
+    private static void setGrade(int playerId) {
+        if (points[playerId] >= 50) {
+            grade[playerId] = "GOLD";
+        } else if (points[playerId] >= 30) {
+            grade[playerId] = "SILVER";
+        } else {
+            grade[playerId] = "NORMAL";
+        }
+    }
+
+    private static void showPlayerPointsAndGrade(int playerId) {
+        System.out.print("NAME : " + playerNames[playerId] + ", ");
+        System.out.print("POINT : " + points[playerId] + ", ");
+        System.out.println("GRADE : " + grade[playerId]);
     }
 
     private static void showRemovedPlayer() {
@@ -72,38 +96,11 @@ public class Attendance {
         }
     }
 
-    private static void showPlayerPointsAndGrade(int playerId) {
-        System.out.print("NAME : " + playerNames[playerId] + ", ");
-        System.out.print("POINT : " + points[playerId] + ", ");
-        System.out.println("GRADE : " + grade[playerId]);
-    }
-
     private static boolean isRemovedPlayer(int i) {
         return grade[i].equals("NORMAL")
                 && playerAttDay[i][WEDNESDAY] == 0
                 && playerAttDay[i][SATURDAY] == 0
                 && playerAttDay[i][SUNDAY] == 0;
-    }
-
-    private static boolean isExceedMAXPlayers(int playerId) {
-        return playerId == -1;
-    }
-
-    private static void setGrade(int playerId) {
-        if (points[playerId] >= 50) {
-            grade[playerId] = "GOLD";
-        } else if (points[playerId] >= 30) {
-            grade[playerId] = "SILVER";
-        } else {
-            grade[playerId] = "NORMAL";
-        }
-    }
-
-    private static void calBonusPoints(int playerId) {
-        if (playerAttDay[playerId][WEDNESDAY] >= BONUS_COUNT
-                || playerAttDay[playerId][SATURDAY] + playerAttDay[playerId][SUNDAY] >= BONUS_COUNT) {
-            points[playerId] += 10;
-        }
     }
 
     private static int getPlayerId(String player) {
@@ -114,6 +111,10 @@ public class Attendance {
             playerNames[totalPlayers] = player;
         }
         return playerIds.get(player);
+    }
+
+    private static boolean isExceedMAXPlayers(int playerId) {
+        return playerId == -1;
     }
 
     public static void main(String[] args) {
@@ -134,7 +135,7 @@ public class Attendance {
             }
 
             for (int playerId = 1; playerId <= totalPlayers; playerId++) {
-                calBonusPoints(playerId);
+
                 setGrade(playerId);
                 showPlayerPointsAndGrade(playerId);
             }
