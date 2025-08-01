@@ -21,9 +21,6 @@ public class Attendance {
     static String[] grade = new String[MAX_PLAYERS];
     static String[] playerNames = new String[MAX_PLAYERS];
 
-    static int[] WEDBonus = new int[100];
-    static int[] SATSUNBonus = new int[100];
-
     public static void sumPoints(int playerId, String day) {
         int addPoint = 0;
         int dayIndex = 0;
@@ -39,7 +36,6 @@ public class Attendance {
             case "wednesday":
                 dayIndex = WEDNESDAY;
                 addPoint += 3;
-                WEDBonus[playerId]++;
                 break;
             case "thursday":
                 dayIndex = THURSDAY;
@@ -52,12 +48,10 @@ public class Attendance {
             case "saturday":
                 dayIndex = SATURDAY;
                 addPoint += 2;
-                SATSUNBonus[playerId]++;
                 break;
             case "sunday":
                 dayIndex = SUNDAY;
                 addPoint += 2;
-                SATSUNBonus[playerId]++;
                 break;
             default:
                 break;
@@ -85,7 +79,10 @@ public class Attendance {
     }
 
     private static boolean isRemovedPlayer(int i) {
-        return grade[i].equals("NORMAL") && WEDBonus[i] == 0 && SATSUNBonus[i] == 0;
+        return grade[i].equals("NORMAL")
+                && playerAttDay[i][WEDNESDAY] == 0
+                && playerAttDay[i][SATURDAY] == 0
+                && playerAttDay[i][SUNDAY] == 0;
     }
 
     private static boolean isExceedMAXPlayers(int playerId) {
@@ -103,8 +100,8 @@ public class Attendance {
     }
 
     private static void calBonusPoints(int playerId) {
-        if (playerAttDay[playerId][WEDNESDAY] >= BONUS_COUNT ||
-                playerAttDay[playerId][SATURDAY] + playerAttDay[playerId][SUNDAY] >= BONUS_COUNT) {
+        if (playerAttDay[playerId][WEDNESDAY] >= BONUS_COUNT
+                || playerAttDay[playerId][SATURDAY] + playerAttDay[playerId][SUNDAY] >= BONUS_COUNT) {
             points[playerId] += 10;
         }
     }
